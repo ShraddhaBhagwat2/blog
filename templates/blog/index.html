@@ -1,0 +1,53 @@
+{% extends 'partials/base.html' %}
+{% block title %}Home Page{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container">
+        <div class="row mt-5 pt-3">
+            <div class="col-md-4">
+                <div class="card my-3 shadow">
+                    <div class="card-body">
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <input class="btn btn-primary btn-block" type="submit" value="Post">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    {% for post in posts %}
+                    <div class="col-md-12 mb-4">
+                        <div class="card shadow h-100">
+                            <div class="card-body d-flex flex-column">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <img class="img-thumbnail card-img" src="{{ post.author.profilemodel.image.url }}" alt="img">
+                                    </div>
+                                    <div class="col-md-8 d-flex flex-column">
+                                        <small>{{ post.date_created }}</small>
+                                        <hr>
+                                        <a class="h3" href="{% url 'blog-post-detail' post.id %}">{{ post.title }}</a>
+                                        <div class="post-content flex-grow-1">
+                                            <p class="text-justify my-3">{{ post.content|slice:":150" }}{% if post.content|length > 150 %}...{% endif %}</p>
+                                        </div>
+                                        <a class="btn btn-link p-0 mt-auto" href="{% url 'blog-post-detail' post.id %}">Read more</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .card-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+    </style>
+{% endblock %}
